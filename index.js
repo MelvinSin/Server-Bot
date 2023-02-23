@@ -28,12 +28,8 @@ client.on("messageCreate", (message) => {
 const welcomeChannelId = "1078336416699916358"
 
 //generate image is async, so we need an async func
-client.on("guildMemberAdd", async (member) => {
-    const img = await generateImage(member)
-    member.guild.channels.cache.get(welcomeChannelId).send({
-        content:`<@${member.id}> Welcome to the server!`,
-        files: [img]
-    })
+client.on("guildMemberAdd", (member) => {
+    member.guild.channels.cache.get(welcomeChannelId).send(`<@${member.id}> Welcome to the server!`)
 })
 
 client.login(process.env.TOKEN)
