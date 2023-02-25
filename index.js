@@ -90,7 +90,7 @@ client.on("messageCreate", (message) => {
         message.reply(`hör auf zu laggen!!`)
     }
     if(message.content.includes("digga")){
-        message.reply(`Walla Habibi, willst Stress??`)
+        message.reply(`Ching Chang Chong`)
     }
     if(message.content == "gumo"){
         id = "300687482465288194"
@@ -131,10 +131,17 @@ client.on('messageCreate', (message) => {
         .setDescription('List of all the commands')
         .setColor('DarkBlue')
         .addFields({name: ` `, value: ` `})
-        .addFields({name: '-r', value: 'roll a d20'}, 
+        .addFields(
+            {name: 'rules', value: 'everything after the commands need to be written together'},
+            {name: 'example', value: '-rm 1d20+3d12+5'},
+            {name: '[optional]', value: 'with a modifier'},
+            {name: ` `, value: ` `},
+            {name: ` `, value: ` `},
+            {name: '-r', value: 'roll a d20'}, 
             {name: '-r xdy+z', value: 'roll x dices with y sides and add z to it'},
-            {name: '-rh', value: 'roll 2d20 with advantage [optional] with a modifier' }, 
-            {name: '-rl', value: 'roll 2d20 with disadvantage [optional] with a modifier'},
+            {name: '-rh', value: 'roll 2d20 with advantage [optional]' }, 
+            {name: '-rl', value: 'roll 2d20 with disadvantage [optional]'},
+            {name: '-rm', value: 'roll multiple dices [optional]'},
             {name: '-d', value: 'death saving throw'},
             {name: '-dm', value: 'Special dice for the DM'})
         message.reply({ embeds: [embed]})
@@ -147,10 +154,10 @@ client.on('messageCreate', (message) => {
     }
 
     //Roll with multiple dices
-    if(message[0] == "-rm"){
+    if(messageWords[0] == "-rm"){
         const rolls = messageWords[1].split('+')
-        const rollResults = []
-        for(let i = 1; i < rolls.length; i++){
+        var rollResults = []
+        for(let i = 0; i < rolls.length; i++){
           if(rolls[i].includes('d')){
             rollResults.push(singleRoll(rolls[i]))
           }
@@ -158,8 +165,10 @@ client.on('messageCreate', (message) => {
             rollResults.push(rolls[i])
           }
         }
-      var sum = rollResults.reduce((a,b) => a + b);
-      message.reply(`[${rollResults.toString()}] = ${sum}`)
+
+        rollResults = rollResults.map(Number)
+        var sum = rollResults.reduce((a,b) => a + b);
+        message.reply(`[${rollResults.toString()}] = ${sum}`)
     }
     
     //Roll with advantage
