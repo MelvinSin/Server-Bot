@@ -25,6 +25,10 @@ const commands = [
                 required: true,
             }
         ]
+    },
+    {
+        name : "help",
+        description: "List of all the commands",
     }
 ]
 

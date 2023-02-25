@@ -1,9 +1,9 @@
-const { GatewayIntentBits, MessageActivityType } = require("discord.js")
+const { GatewayIntentBits, MessageActivityType, EmbedBuilder } = require("discord.js")
 const Discord = require("discord.js")
+const addModifier = require("./function/addModifier")
 require("dotenv").config()
 
-const generateImage = require("./generateImage")
-
+const roll = require('./function/roll')
 
 const client = new Discord.Client({
     intents: [
@@ -18,22 +18,28 @@ client.on("ready", () =>{
     console.log(`Logged in as ${client.user.tag}`)
 })
 
-client.on("messageCreate", (message) => {
+client.on("message", (message) => {
     //if author is a bot, ignore
     if(message.author.bot){
         return;
     }
-
     if(message.content == "hi"){
+        console.log(message)
         message.reply("Schnauze")
     }
 })
 
-const welcomeChannelId = "1078336416699916358"
+const welcomeChannelId = "782702704815767573"
 
 //generate image is async, so we need an async func
 client.on("guildMemberAdd", (member) => {
-    member.guild.channels.cache.get(welcomeChannelId).send(`<@${member.id}> Welcome to the server!`)
+    if(member.id == "300687482465288194"){
+        id = "300687482465288194"
+        member.guild.channels.cache.get(welcomeChannelId).send(`Ach <@${id}> Daniel, wie war der Trip in deinem Keller`)
+    }
+    if(member.id == "447339564223299585"){
+        member.guild.channels.cache.get(welcomeChannelId).send(`Da biste ja wieder`)
+    }
 })
 
 //interaction on commands
@@ -69,103 +75,67 @@ client.on('interactionCreate', (interaction) => {
 
 client.on("messageCreate", (message) => {
     if(message.content == "t"){
-        message.reply(`<@${member.id}> hör auf zu laggen!!`)
+        message.reply(`hör auf zu laggen!!`)
+    }
+    if(message.content.includes("digga")){
+        message.reply(`Walla Habibi, willst Stress??`)
+    }
+    if(message.content == "gumo"){
+        id = "300687482465288194"
+        message.reply(`Gumo <@${id}> :)`)
     }
 })
 
 client.on('messageCreate', (message) => {
     const messageWords = message.content.split(' ')
     //existiert ein modifier?
-    //ist der modifier positiv?
+    //ist der modifier positiv?s
     var pos
     var modifier = 0
-    
-    if(messageWords[1].includes('+')){
-        const messageModifier = messageWords[1].split('+')
-        modifier = parseInt(messageModifier[1])
-        pos = true
-        
-    }
-    else if(messageWords[1].includes('-')){
-        const messageModifier = messageWords[1].split('-')
-        modifier = messageModifier[1]
-        pos = false
+    if(messageWords.length > 1){
+        if(messageWords[1].includes('+')){
+            const messageModifier = messageWords[1].split('+')
+            modifier = parseInt(messageModifier[1])
+            pos = true
+            
+        }
+        else if(messageWords[1].includes('-')){
+            const messageModifier = messageWords[1].split('-')
+            modifier = messageModifier[1]
+            pos = false
+        }
     }
     	
     
 
     const rollFlavor = messageWords.slice(2).join(' ')
+    //Help menu
+    if(messageWords[0] == "-help"){
+        const embed = new EmbedBuilder()
+        .setTitle("Help")
+        .setDescription('List of all the commands')
+        .setColor('DarkBlue')
+        .addFields({name: ` `, value: ` `})
+        .addFields({name: '-r', value: 'roll a d20'}, 
+            {name: '-r xdy+z', value: 'roll x dices with y sides and add z to it'},
+            {name: '-rh', value: 'roll 2d20 with advantage [optional] with a modifier' }, 
+            {name: '-rl', value: 'roll 2d20 with disadvantage [optional] with a modifier'},
+            {name: '-d', value: 'death saving throw'},
+            {name: '-dm', value: 'Special dice for the DM'})
+        message.reply({ embeds: [embed]})
+    }
+    
 
     //Roll with one kind of the dice
     if (messageWords[0] === '-r') {
-      if (messageWords.length === 1) {
-        // !roll
-        return message.reply(
-          (Math.floor(Math.random() * 6) + 1) + ' ' + rollFlavor
-        );
-      }
-      
-      let sides = messageWords[1]; // !roll 20
-      let rolls = 1;
-      if (!isNaN(messageWords[1][0] / 1) && messageWords[1].includes('d')) {
-        // !roll 4d20
-        rolls = messageWords[1].split('d')[0] / 1;
-        sides = messageWords[1].split('d')[1];
-        sides = sides.split('+')[0]
-      } else if (messageWords[1][0] == 'd') {
-        // !roll d20
-        sides = sides.slice(1);
-      }
-      sides = sides / 1; // convert to number
-      if (isNaN(sides) || isNaN(rolls)) {
-        return;
-      }
-      if (rolls > 1) {
-        const rollResults = [];
-        for (let i = 0; i < rolls; i++) {
-          rollResults.push(Math.floor(Math.random()*(sides-1))+1);
-        }
-        var sum = rollResults.reduce((a,b) => a + b);
-
-        if(modifier != 0){
-            if(pos){
-                sum += modifier
-                return message.reply(`[${rollResults.toString()}] + ${modifier} = ${sum}`)
-            }
-            else{
-                sum -= modifier
-                return message.reply(`[${rollResults.toString()}] - ${modifier} = ${sum}`)
-            }
-        }
-        else{
-            return message.reply(`[${rollResults.toString()}] = ${sum}`)
-        }
-
-      } else {
-        let zwerg = Math.floor(Math.random() * (sides-1)) +1
-        var erg = zwerg
-
-        if(modifier != 0){
-            if(pos){
-                erg += modifier
-                return message.reply(`${zwerg} + ${modifier} = ${erg}` )
-            }
-            else{
-                erg -= modifier
-                return message.reply(`${zwerg} + ${modifier} = ${erg}` )
-            }
-        }
-        else{
-            return message.reply(`${zwerg}` )
-        }
-      }
+        roll(message)
     }
 
     //Roll with multiple dices
     if(message[0] == "-rm"){
-        const rolls = message.content.split('+')
+        const rolls = messageWords[1].split('+')
 
-        for(let i = 0; i < rolls.length; i++){
+        for(let i = 1; i < rolls.length; i++){
             
         }
     }
@@ -184,19 +154,9 @@ client.on('messageCreate', (message) => {
             erg = rollResults[0]
         }
 
-        if(modifier != 0){
-            if(pos){
-                erg += modifier
-                return message.reply(`[${rollResults.toString()}] + ${modifier} = ${erg}`)
-            }
-            else{
-                erg -= modifier
-                return message.reply(`[${rollResults.toString()}] - ${modifier} = ${erg}`)
-            }
-        }
-        else{
-            return message.reply(`[${rollResults.toString()}] = ${erg}`)
-        }
+        const ans = addModifier(modifier, pos, erg, rollResults)
+
+        return message.reply(ans)
     }
 
     //Roll with disadvantage
@@ -213,19 +173,9 @@ client.on('messageCreate', (message) => {
             erg = rollResults[1]
         }
 
-        if(modifier != 0){
-            if(pos){
-                erg += modifier
-                return message.reply(`[${rollResults.toString()}] + ${modifier} = ${erg}`)
-            }
-            else{
-                erg -= modifier
-                return message.reply(`[${rollResults.toString()}] - ${modifier} = ${erg}`)
-            }
-        }
-        else{
-            return message.reply(`[${rollResults.toString()}] = ${erg}`)
-        }
+        const ans = addModifier(modifier, pos, erg, rollResults)
+        console.log(message)
+        return message.reply(ans)
     }
 
     //Death saving throw
@@ -239,6 +189,30 @@ client.on('messageCreate', (message) => {
             return message.reply(`${erg} One step closer to life`)
         }
     }
-  });
+
+    if(messageWords[0] == "-dm"){
+        if(message.author.id == "383707465411198976"){
+            const erg = Math.floor(Math.random()*20)+1
+            if(erg == 1){
+                return message.reply("1: Welp, Lets kill the cat")
+            }
+            else if(erg == 20){
+                return message.reply("20: God mode on!! Time to kill the players")
+            }
+            else{
+                return message.reply("Roll better or worse ;D")
+            }
+        } 
+    }
+
+    if(messageWords[0] == "-camo"){
+        //sends pm to the id
+        client.users.fetch("513821779429687296").then (dm =>{
+            dm.send("here")
+        })
+        //sends pm to the author
+        client.users.get("513821779429687296").send("Here")
+    }
+  })
 
 client.login(process.env.TOKEN)
