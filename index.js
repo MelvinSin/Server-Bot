@@ -1,4 +1,4 @@
-const express = require("express")
+/*const express = require("express")
 const app = express()
 
 app.listen(3000, () => {
@@ -7,7 +7,7 @@ app.listen(3000, () => {
 
 app.get("/", (req,res) => {
   res.send("Hello World")
-})
+})*/
 
 const { GatewayIntentBits, MessageActivityType, EmbedBuilder } = require("discord.js")
 const Discord = require("discord.js")
@@ -131,19 +131,19 @@ client.on('messageCreate', (message) => {
         .setDescription('List of all the commands')
         .setColor('DarkBlue')
         .addFields({name: ` `, value: ` `})
-        .addFields(
-            {name: 'rules', value: 'everything after the commands need to be written together'},
-            {name: 'example', value: '-rm 1d20+3d12+5'},
-            {name: '[optional]', value: 'with a modifier'},
-            {name: ` `, value: ` `},
-            {name: ` `, value: ` `},
-            {name: '-r', value: 'roll a d20'}, 
-            {name: '-r xdy+z', value: 'roll x dices with y sides and add z to it'},
-            {name: '-rh', value: 'roll 2d20 with advantage [optional]' }, 
-            {name: '-rl', value: 'roll 2d20 with disadvantage [optional]'},
-            {name: '-rm', value: 'roll multiple dices [optional]'},
-            {name: '-d', value: 'death saving throw'},
-            {name: '-dm', value: 'Special dice for the DM'})
+        .addFields({name: 'rules', value: 'everything after the commands need to be written together'},
+        {name: 'example', value: '-rm 1d20+3d12+5'},
+        {name: '[optional]', value: 'with a modifier'},
+        {name:  ` `, value: ` ` },
+        {name: ` ` , value: ` ` },
+        {name: ` ` , value: ` ` },
+        {name: '-r', value: 'roll a d20'}, 
+        {name: '-r xdy+z', value: 'roll x dices with y sides and add z to it'},
+        {name: '-rh', value: 'roll 2d20 with advantage [optional]' }, 
+        {name: '-rl', value: 'roll 2d20 with disadvantage [optional]'},
+        {name: '-rm', value: 'roll multiple dices [optional]'},
+        {name: '-d', value: 'death saving throw'},
+        {name: '-dm', value: 'Special dice for the DM'})
         message.reply({ embeds: [embed]})
     }
     
@@ -159,14 +159,17 @@ client.on('messageCreate', (message) => {
         var rollResults = []
         for(let i = 0; i < rolls.length; i++){
           if(rolls[i].includes('d')){
-            rollResults.push(singleRoll(rolls[i]))
+            var erg = singleRoll(rolls[i])
+            for(let o = 0; o < erg.length; o++){
+                rollResults.push(erg[o])
+            }
           }
           else{
-            rollResults.push(rolls[i])
+            var erg = parseInt(rolls[i])
+            rollResults.push(erg)
           }
         }
 
-        rollResults = rollResults.map(Number)
         var sum = rollResults.reduce((a,b) => a + b);
         message.reply(`[${rollResults.toString()}] = ${sum}`)
     }
