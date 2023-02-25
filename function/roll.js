@@ -54,7 +54,7 @@ module.exports = (message) => {
         var sum = rollResults.reduce((a,b) => a + b);
 
         const ans = addModifier(modifier, pos, sum, rollResults)
-
+  
         message.reply(`${messageWords[1]} : ${ans}`)
 
     } else {

@@ -1,9 +1,21 @@
+const express = require("express")
+const app = express()
+
+app.listen(3000, () => {
+  console.log("Project is running")
+})
+
+app.get("/", (req,res) => {
+  res.send("Hello World")
+})
+
 const { GatewayIntentBits, MessageActivityType, EmbedBuilder } = require("discord.js")
 const Discord = require("discord.js")
 const addModifier = require("./function/addModifier")
 require("dotenv").config()
 
 const roll = require('./function/roll')
+const singleRoll = require('./function/singleRoll')
 
 const client = new Discord.Client({
     intents: [
@@ -84,6 +96,9 @@ client.on("messageCreate", (message) => {
         id = "300687482465288194"
         message.reply(`Gumo <@${id}> :)`)
     }
+  if(message.content == "d"){
+        message.reply(`DEEEEZ Nuts!!`)
+    }
 })
 
 client.on('messageCreate', (message) => {
@@ -134,12 +149,19 @@ client.on('messageCreate', (message) => {
     //Roll with multiple dices
     if(message[0] == "-rm"){
         const rolls = messageWords[1].split('+')
-
+        const rollResults = []
         for(let i = 1; i < rolls.length; i++){
-            
+          if(rolls[i].includes('d')){
+            rollResults.push(singleRoll(rolls[i]))
+          }
+          else{
+            rollResults.push(rolls[i])
+          }
         }
+      var sum = rollResults.reduce((a,b) => a + b);
+      message.reply(`[${rollResults.toString()}] = ${sum}`)
     }
-
+    
     //Roll with advantage
     if(messageWords[0] == "-rh"){
         const rollResults = [];
