@@ -1,4 +1,4 @@
-const express = require("express")
+/*const express = require("express")
 const app = express()
 
 app.listen(3000, () => {
@@ -7,13 +7,16 @@ app.listen(3000, () => {
 
 app.get("/", (req,res) => {
   res.send("Hello World")
-})
+})*/
 
 const { GatewayIntentBits, MessageActivityType, EmbedBuilder } = require("discord.js")
 const Discord = require("discord.js")
 const addModifier = require("./function/addModifier")
 require("dotenv").config()
 
+
+const Player = require('./player/player.js')
+const attrRoll = require('./function/attrRoll')
 const roll = require('./function/roll')
 const singleRoll = require('./function/singleRoll')
 
@@ -26,9 +29,41 @@ const client = new Discord.Client({
     ]
 })
 
+var xan = new Player(3,0,0,3,3,2,2,0,0,4,7,0,3,0,3,3,3,3,0,3,0,0,4,7,7,7,7,0,0,0,0)
+var arestop = new Player(2,4,4,2,2,3,3,0,0,-1,2,1,4,7,2,2,2,0,0,0,0,3,-1,-1,2,-1,-1,1,4,1,1)
+var eslan = new Player(0,-1,-1,0,0,-1,-1,3,3,2,5,4,7,0,1,1,1,7,4,4,4,4,3,6,3,3,3,8,5,5,5 )
+var xuaq = new Player(3,4,7,3,3,2,5,-1,-1,-1,-1,-1,-1,7,6,3,3,-1,-1,-1,-1,-1,2,-1,-1,-1,-1,-1,7,2,-1)
+
+
 client.on("ready", () =>{
     console.log(`Logged in as ${client.user.tag}`)
 })
+
+//Playerroll
+client.on("messageCreate", (message) => {
+    const messageWords = message.content.split(' ')
+
+    if(messageWords[0] == "-t"){
+        if(message.author.id == "513821779429687296"){
+            attrRoll(message,xan)
+        }
+        if(message.author.id == "300687482465288194"){
+            attrRoll(message,eslan)
+        }
+        if(message.author.id == "447339564223299585"){
+            attrRoll(message,arestop)
+        }
+        if(message.author.id == "395938979293167617"){
+            attrRoll(message,xuaq)
+        }
+    }
+})
+
+
+
+
+
+
 
 client.on("message", (message) => {
     //if author is a bot, ignore
@@ -100,6 +135,7 @@ client.on("messageCreate", (message) => {
     }
 })
 
+//Roll
 client.on('messageCreate', (message) => {
     const messageWords = message.content.split(' ')
     //existiert ein modifier?
@@ -142,8 +178,70 @@ client.on('messageCreate', (message) => {
         {name: '-rl', value: 'roll 2d20 with disadvantage [optional]'},
         {name: '-rm', value: 'roll multiple dices [optional]'},
         {name: '-d', value: 'death saving throw'},
-        {name: '-dm', value: 'Special dice for the DM'})
+        {name: '-dm', value: 'Special dice for the DM'},
+        {name: ` ` , value: ` ` },
+        {name: `help2 and help3 only for Xan, Eslan, Arestop, Xuaq` , value: ` ` },
+        {name: ` ` , value: ` ` },
+        {name: `-help2` , value: `second help page` },
+        {name: `-help3` , value: `third help page` },)
+
         message.reply({ embeds: [embed]})
+    }
+    
+    if(messageWords[0] == "-help2"){
+        const embed2 = new EmbedBuilder()
+        .setTitle("Help 2")
+        .setDescription('List of all the commands (page 2)')
+        .setColor('Aqua')
+        .addFields({name: ` `, value: ` `})
+        .addFields({name: 'rules', value: '-t + attribute'},
+        {name: ` `, value: ` `},
+        {name: ` `, value: ` `},
+        {name: 'init', value: 'Initiative'},
+        {name: 'str', value: 'Strength'},
+        {name: 'strsv', value: 'Strength saving throw'},
+        {name: 'dex', value: 'Dexterity'},
+        {name: 'dexsv', value: 'Dexterity saving throw'},
+        {name: 'con', value: 'Constitution'},
+        {name: 'consv', value: 'Constitution saving throw'},
+        {name: 'int', value: 'Intelligent'},
+        {name: 'intsv', value: 'Intelligent saving throw'},
+        {name: 'wis', value: 'Wisdom'},
+        {name: 'wissv', value: 'Wisdom saving throw'},
+        {name: 'char', value: 'Charisma'},
+        {name: 'charsv', value: 'Charisma saving throw'},
+       )
+
+        message.reply({ embeds: [embed2]})
+    }
+    if(messageWords[0] == "-help3"){
+        const embed2 = new EmbedBuilder()
+        .setTitle("Help 3")
+        .setDescription('List of all the commands (page 3)')
+        .setColor('Aqua')
+        .addFields({name: ` `, value: ` `})
+        .addFields({name: 'rules', value: '-t + attribute'},
+        {name: ` `, value: ` `},
+        {name: ` `, value: ` `},
+        {name: 'ath', value: 'Athletic'},
+        {name: 'acr', value: 'Acrobatic'},
+        {name: 'sleight', value: 'Sleight of Hands'},
+        {name: 'arc', value: 'Arcana'},
+        {name: 'his', value: 'History'},
+        {name: 'inves', value: 'Investigation'},
+        {name: 'nat', value: 'Nature'},
+        {name: 'religion', value: 'Religion'},
+        {name: 'ani', value: 'Animal Handling'},
+        {name: 'ins', value: 'Insight'},
+        {name: 'med', value: 'Medicine'},
+        {name: 'perc', value: 'Perception'},
+        {name: 'sur', value: 'Survival'},
+        {name: 'dec', value: 'Deception'},
+        {name: 'inti', value: 'Intimidation'},
+        {name: 'perf', value: 'Performance'},
+        {name: 'pers', value: 'Persuasion'},
+       )
+        message.reply({ embeds: [embed2]})
     }
     
 
