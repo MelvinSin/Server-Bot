@@ -27,7 +27,7 @@ module.exports = (message) => {
     if (messageWords.length === 1) {
         // !roll
         return message.reply(
-        '1d20: ' + (Math.floor(Math.random() * 6) + 1) + ' ' + rollFlavor
+        '1d20: ' + (Math.floor(Math.random() * 20) + 1) + ' ' + rollFlavor
         )
     }
     

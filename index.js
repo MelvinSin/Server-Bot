@@ -1,4 +1,4 @@
-/*const express = require("express")
+const express = require("express")
 const app = express()
 
 app.listen(3000, () => {
@@ -7,7 +7,7 @@ app.listen(3000, () => {
 
 app.get("/", (req,res) => {
   res.send("Hello World")
-})*/
+})
 
 const { GatewayIntentBits, MessageActivityType, EmbedBuilder } = require("discord.js")
 const Discord = require("discord.js")
@@ -36,7 +36,6 @@ client.on("message", (message) => {
         return;
     }
     if(message.content == "hi"){
-        console.log(message)
         message.reply("Schnauze")
     }
 })
