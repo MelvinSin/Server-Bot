@@ -49,7 +49,7 @@ module.exports = (message) => {
     if (rolls > 1) {
         const rollResults = [];
         for (let i = 0; i < rolls; i++) {
-        rollResults.push(Math.floor(Math.random()*(sides-1))+1);
+        rollResults.push(Math.floor(Math.random()*sides)+1);
         }
         var sum = rollResults.reduce((a,b) => a + b);
 
@@ -58,7 +58,7 @@ module.exports = (message) => {
         message.reply(`${messageWords[1]} : ${ans}`)
 
     } else {
-        let zwerg = Math.floor(Math.random() * (sides-1)) +1
+        let zwerg = Math.floor(Math.random() * sides) +1
         var erg = zwerg
         
         const ans = addModifier(modifier, pos, erg, zwerg)

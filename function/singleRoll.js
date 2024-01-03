@@ -20,14 +20,14 @@ module.exports = (message) => {
     if (rolls > 1) {
         const rollResults = [];
         for (let i = 0; i < rolls; i++) {
-          rollResults.push(Math.floor(Math.random()*(sides-1))+1);
+          rollResults.push(Math.floor(Math.random()*sides)+1);
         }
       
         return rollResults
 
     } else {
         const rollResults = [];
-        rollResults.push(Math.floor(Math.random()*(sides-1))+1);
+        rollResults.push(Math.floor(Math.random()*sides)+1);
       
         return rollResults
     } 
